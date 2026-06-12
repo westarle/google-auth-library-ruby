@@ -243,7 +243,7 @@ describe Google::Auth::GCECredentials do
                             headers: { "Metadata-Flavor" => "Google" })
         expect { @client.fetch_access_token! }
           .to raise_error Signet::AuthorizationError
-        expect(stub).to have_been_requested.times(6)
+        expect(stub).to have_been_requested
       end
 
       it "should fail if the metadata request returns a 500" do
@@ -261,7 +261,7 @@ describe Google::Auth::GCECredentials do
                           headers: { "Metadata-Flavor" => "Google" })
         expect { @client.fetch_access_token! }
           .to raise_error Signet::AuthorizationError
-        expect(stub).to have_been_requested
+        expect(stub).to have_been_requested.times(6)
       end
 
       it "should fail with AuthorizationError including detailed error info on timeout" do
@@ -309,7 +309,7 @@ describe Google::Auth::GCECredentials do
                             headers: { "Metadata-Flavor" => "Google" })
         expect { @id_client.fetch_access_token! }
           .to raise_error Signet::AuthorizationError
-        expect(stub).to have_been_requested.times(6)
+        expect(stub).to have_been_requested
       end
 
       it "should fail if the metadata request returns a 500" do
@@ -327,7 +327,7 @@ describe Google::Auth::GCECredentials do
                           headers: { "Metadata-Flavor" => "Google" })
         expect { @id_client.fetch_access_token! }
           .to raise_error Signet::AuthorizationError
-        expect(stub).to have_been_requested
+        expect(stub).to have_been_requested.times(6)
       end
 
       it "should fail with Signet::AuthorizationError if request times out" do

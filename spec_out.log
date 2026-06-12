@@ -1,0 +1,942 @@
+/usr/local/google/home/westarle/src/agents/auth-parity-4/google-auth-library-ruby/spec/spec_helper.rb:25: warning: syslog was loaded from the standard library, but will no longer be part of the default gems starting from Ruby 3.4.0.
+You can add syslog to your Gemfile or gemspec to silence this warning.
+Run options: include {:focus=>true}
+
+All examples were filtered out; ignoring {:focus=>true}
+
+Google::Auth::GCECredentials
+  when metadata query is disabled
+    leaves universe as googleapis.com and does not call the MDS (FAILED - 1)
+    behaves like apply/apply! are OK
+      #fetch_access_token
+        should set access_token to the fetched value (FAILED - 2)
+        should set id_token to the fetched value (FAILED - 3)
+        should notify refresh listeners after updating (FAILED - 4)
+        should log when a logger is set (FAILED - 5)
+        should not log to stdout when a logger is not set (FAILED - 6)
+        should not log to stderr when a logger is not set (FAILED - 7)
+      #apply!
+        should update the target hash with fetched access token (FAILED - 8)
+        should update the target hash with fetched ID token (FAILED - 9)
+      updater_proc
+        should provide a proc that updates a hash with the access token (FAILED - 10)
+      #apply
+        should not update the original hash with the access token (FAILED - 11)
+        should add the token to the returned hash (FAILED - 12)
+        should not fetch a new token if the current is not expired (FAILED - 13)
+        should fetch a new token if the current one is expired (FAILED - 14)
+  when metadata query is enabled
+    default universe due to 404 from MDS
+      sets the universe (FAILED - 15)
+      sets the universe without explicit fetch_access_token (FAILED - 16)
+      returns a consistent expiry using cached data (FAILED - 17)
+      behaves like apply/apply! are OK
+        #fetch_access_token
+          should set access_token to the fetched value (FAILED - 18)
+          should set id_token to the fetched value (FAILED - 19)
+          should notify refresh listeners after updating (FAILED - 20)
+          should log when a logger is set (FAILED - 21)
+          should not log to stdout when a logger is not set (FAILED - 22)
+          should not log to stderr when a logger is not set (FAILED - 23)
+        #apply!
+          should update the target hash with fetched access token (FAILED - 24)
+          should update the target hash with fetched ID token (FAILED - 25)
+        updater_proc
+          should provide a proc that updates a hash with the access token (FAILED - 26)
+        #apply
+          should not update the original hash with the access token (FAILED - 27)
+          should add the token to the returned hash (FAILED - 28)
+          should not fetch a new token if the current is not expired (FAILED - 29)
+          should fetch a new token if the current one is expired (FAILED - 30)
+    default universe due to empty data from MDS
+      sets the universe (FAILED - 31)
+      sets the universe without explicit fetch_access_token (FAILED - 32)
+      returns a consistent expiry using cached data (FAILED - 33)
+      behaves like apply/apply! are OK
+        #fetch_access_token
+          should set access_token to the fetched value (FAILED - 34)
+          should set id_token to the fetched value (FAILED - 35)
+          should notify refresh listeners after updating (FAILED - 36)
+          should log when a logger is set (FAILED - 37)
+          should not log to stdout when a logger is not set (FAILED - 38)
+          should not log to stderr when a logger is not set (FAILED - 39)
+        #apply!
+          should update the target hash with fetched access token (FAILED - 40)
+          should update the target hash with fetched ID token (FAILED - 41)
+        updater_proc
+          should provide a proc that updates a hash with the access token (FAILED - 42)
+        #apply
+          should not update the original hash with the access token (FAILED - 43)
+          should add the token to the returned hash (FAILED - 44)
+          should not fetch a new token if the current is not expired (FAILED - 45)
+          should fetch a new token if the current one is expired (FAILED - 46)
+    custom universe
+      sets the universe (FAILED - 47)
+      sets the universe without explicit fetch_access_token (FAILED - 48)
+      supports updating the universe_domain (FAILED - 49)
+      prioritizes argument-specified universe domain (FAILED - 50)
+      behaves like apply/apply! are OK
+        #fetch_access_token
+          should set access_token to the fetched value (FAILED - 51)
+          should set id_token to the fetched value (FAILED - 52)
+          should notify refresh listeners after updating (FAILED - 53)
+          should log when a logger is set (FAILED - 54)
+          should not log to stdout when a logger is not set (FAILED - 55)
+          should not log to stderr when a logger is not set (FAILED - 56)
+        #apply!
+          should update the target hash with fetched access token (FAILED - 57)
+          should update the target hash with fetched ID token (FAILED - 58)
+        updater_proc
+          should provide a proc that updates a hash with the access token (FAILED - 59)
+        #apply
+          should not update the original hash with the access token (FAILED - 60)
+          should add the token to the returned hash (FAILED - 61)
+          should not fetch a new token if the current is not expired (FAILED - 62)
+          should fetch a new token if the current one is expired (FAILED - 63)
+    error in universe_domain
+      results in an error (FAILED - 64)
+  metadata is available
+    #fetch_access_token
+      should pass scopes (FAILED - 65)
+    Fetch ID tokens
+      should parse out expiration time (FAILED - 66)
+  metadata is unavailable
+    #fetch_access_token
+      should fail if the metadata request returns a 404 (FAILED - 67)
+      should fail if the metadata request returns a 403 (FAILED - 68)
+      should fail if the metadata request returns a 500 (FAILED - 69)
+      should fail if the metadata request returns an unexpected code (FAILED - 70)
+      should fail with AuthorizationError including detailed error info on timeout (FAILED - 71)
+      should fail with AuthorizationError including detailed error info on connection error (FAILED - 72)
+    Fetch ID tokens
+      should fail if the metadata request returns a 404 (FAILED - 73)
+      should fail if the metadata request returns a 403 (FAILED - 74)
+      should fail if the metadata request returns a 500 (FAILED - 75)
+      should fail if the metadata request returns an unexpected code (FAILED - 76)
+      should fail with Signet::AuthorizationError if request times out (FAILED - 77)
+      should fail with Signet::AuthorizationError if request fails (FAILED - 78)
+  #on_gce?
+    should be true when Metadata-Flavor is Google (FAILED - 79)
+    should be false when Metadata-Flavor is not Google (FAILED - 80)
+    should be false if the response is not 200 (FAILED - 81)
+    should honor GCE_METADATA_HOST environment variable (FAILED - 82)
+  duplicates
+    should duplicate the scope (FAILED - 83)
+    should duplicate the universe_domain_overridden (FAILED - 84)
+
+Failures:
+
+  1) Google::Auth::GCECredentials when metadata query is disabled leaves universe as googleapis.com and does not call the MDS
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  2) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should set access_token to the fetched value
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  3) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should set id_token to the fetched value
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  4) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should notify refresh listeners after updating
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  5) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should log when a logger is set
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  6) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should not log to stdout when a logger is not set
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  7) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should not log to stderr when a logger is not set
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  8) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply! should update the target hash with fetched access token
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  9) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply! should update the target hash with fetched ID token
+     Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+     NameError:
+       uninitialized constant Google::Auth::CredentialsLoader
+     Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+     # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+     # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  10) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK updater_proc should provide a proc that updates a hash with the access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  11) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply should not update the original hash with the access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  12) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply should add the token to the returned hash
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  13) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply should not fetch a new token if the current is not expired
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  14) Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply should fetch a new token if the current one is expired
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:77
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  15) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS sets the universe
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  16) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS sets the universe without explicit fetch_access_token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  17) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS returns a consistent expiry using cached data
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  18) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should set access_token to the fetched value
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  19) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should set id_token to the fetched value
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  20) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should notify refresh listeners after updating
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  21) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should log when a logger is set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  22) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should not log to stdout when a logger is not set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  23) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should not log to stderr when a logger is not set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  24) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply! should update the target hash with fetched access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  25) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply! should update the target hash with fetched ID token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  26) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK updater_proc should provide a proc that updates a hash with the access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  27) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply should not update the original hash with the access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  28) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply should add the token to the returned hash
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  29) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply should not fetch a new token if the current is not expired
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  30) Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply should fetch a new token if the current one is expired
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:92
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  31) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS sets the universe
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  32) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS sets the universe without explicit fetch_access_token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  33) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS returns a consistent expiry using cached data
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  34) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should set access_token to the fetched value
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  35) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should set id_token to the fetched value
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  36) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should notify refresh listeners after updating
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  37) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should log when a logger is set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  38) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should not log to stdout when a logger is not set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  39) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should not log to stderr when a logger is not set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  40) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply! should update the target hash with fetched access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  41) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply! should update the target hash with fetched ID token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  42) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK updater_proc should provide a proc that updates a hash with the access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  43) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply should not update the original hash with the access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  44) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply should add the token to the returned hash
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  45) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply should not fetch a new token if the current is not expired
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  46) Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply should fetch a new token if the current one is expired
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:121
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  47) Google::Auth::GCECredentials when metadata query is enabled custom universe sets the universe
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  48) Google::Auth::GCECredentials when metadata query is enabled custom universe sets the universe without explicit fetch_access_token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  49) Google::Auth::GCECredentials when metadata query is enabled custom universe supports updating the universe_domain
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  50) Google::Auth::GCECredentials when metadata query is enabled custom universe prioritizes argument-specified universe domain
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  51) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should set access_token to the fetched value
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  52) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should set id_token to the fetched value
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  53) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should notify refresh listeners after updating
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  54) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should log when a logger is set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  55) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should not log to stdout when a logger is not set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  56) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should not log to stderr when a logger is not set
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  57) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply! should update the target hash with fetched access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  58) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply! should update the target hash with fetched ID token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  59) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK updater_proc should provide a proc that updates a hash with the access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  60) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply should not update the original hash with the access token
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  61) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply should add the token to the returned hash
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  62) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply should not fetch a new token if the current is not expired
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  63) Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply should fetch a new token if the current one is expired
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      Shared Example Group: "apply/apply! are OK" called from ./spec/googleauth/compute_engine_spec.rb:149
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  64) Google::Auth::GCECredentials when metadata query is enabled error in universe_domain results in an error
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  65) Google::Auth::GCECredentials metadata is available #fetch_access_token should pass scopes
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  66) Google::Auth::GCECredentials metadata is available Fetch ID tokens should parse out expiration time
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  67) Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail if the metadata request returns a 404
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  68) Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail if the metadata request returns a 403
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  69) Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail if the metadata request returns a 500
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  70) Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail if the metadata request returns an unexpected code
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  71) Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail with AuthorizationError including detailed error info on timeout
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  72) Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail with AuthorizationError including detailed error info on connection error
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  73) Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail if the metadata request returns a 404
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  74) Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail if the metadata request returns a 403
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  75) Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail if the metadata request returns a 500
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  76) Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail if the metadata request returns an unexpected code
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  77) Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail with Signet::AuthorizationError if request times out
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  78) Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail with Signet::AuthorizationError if request fails
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  79) Google::Auth::GCECredentials#on_gce? should be true when Metadata-Flavor is Google
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  80) Google::Auth::GCECredentials#on_gce? should be false when Metadata-Flavor is not Google
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  81) Google::Auth::GCECredentials#on_gce? should be false if the response is not 200
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  82) Google::Auth::GCECredentials#on_gce? should honor GCE_METADATA_HOST environment variable
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  83) Google::Auth::GCECredentials duplicates should duplicate the scope
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+  84) Google::Auth::GCECredentials duplicates should duplicate the universe_domain_overridden
+      Failure/Error: allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+
+      NameError:
+        uninitialized constant Google::Auth::CredentialsLoader
+      # ./spec/spec_helper.rb:44:in `block (2 levels) in <top (required)>'
+      # ./vendor/bundle/ruby/3.3.0/gems/webmock-3.26.2/lib/webmock/rspec.rb:39:in `block (2 levels) in <top (required)>'
+
+Finished in 0.0196 seconds (files took 0.50403 seconds to load)
+84 examples, 84 failures
+
+Failed examples:
+
+rspec ./spec/googleauth/compute_engine_spec.rb:79 # Google::Auth::GCECredentials when metadata query is disabled leaves universe as googleapis.com and does not call the MDS
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:1:1]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should set access_token to the fetched value
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:1:2]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should set id_token to the fetched value
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:1:3]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should notify refresh listeners after updating
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:1:4]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should log when a logger is set
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:1:5]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should not log to stdout when a logger is not set
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:1:6]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #fetch_access_token should not log to stderr when a logger is not set
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:2:1]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply! should update the target hash with fetched access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:2:2]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply! should update the target hash with fetched ID token
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:3:1]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK updater_proc should provide a proc that updates a hash with the access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:4:1]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply should not update the original hash with the access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:4:2]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply should add the token to the returned hash
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:4:3]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply should not fetch a new token if the current is not expired
+rspec './spec/googleauth/compute_engine_spec.rb[1:1:1:4:4]' # Google::Auth::GCECredentials when metadata query is disabled behaves like apply/apply! are OK #apply should fetch a new token if the current one is expired
+rspec ./spec/googleauth/compute_engine_spec.rb:94 # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS sets the universe
+rspec ./spec/googleauth/compute_engine_spec.rb:100 # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS sets the universe without explicit fetch_access_token
+rspec ./spec/googleauth/compute_engine_spec.rb:105 # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS returns a consistent expiry using cached data
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:1:1]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should set access_token to the fetched value
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:1:2]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should set id_token to the fetched value
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:1:3]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should notify refresh listeners after updating
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:1:4]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should log when a logger is set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:1:5]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should not log to stdout when a logger is not set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:1:6]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #fetch_access_token should not log to stderr when a logger is not set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:2:1]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply! should update the target hash with fetched access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:2:2]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply! should update the target hash with fetched ID token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:3:1]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK updater_proc should provide a proc that updates a hash with the access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:4:1]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply should not update the original hash with the access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:4:2]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply should add the token to the returned hash
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:4:3]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply should not fetch a new token if the current is not expired
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:1:1:4:4]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to 404 from MDS behaves like apply/apply! are OK #apply should fetch a new token if the current one is expired
+rspec ./spec/googleauth/compute_engine_spec.rb:123 # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS sets the universe
+rspec ./spec/googleauth/compute_engine_spec.rb:129 # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS sets the universe without explicit fetch_access_token
+rspec ./spec/googleauth/compute_engine_spec.rb:134 # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS returns a consistent expiry using cached data
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:1:1]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should set access_token to the fetched value
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:1:2]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should set id_token to the fetched value
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:1:3]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should notify refresh listeners after updating
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:1:4]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should log when a logger is set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:1:5]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should not log to stdout when a logger is not set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:1:6]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #fetch_access_token should not log to stderr when a logger is not set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:2:1]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply! should update the target hash with fetched access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:2:2]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply! should update the target hash with fetched ID token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:3:1]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK updater_proc should provide a proc that updates a hash with the access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:4:1]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply should not update the original hash with the access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:4:2]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply should add the token to the returned hash
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:4:3]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply should not fetch a new token if the current is not expired
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:2:1:4:4]' # Google::Auth::GCECredentials when metadata query is enabled default universe due to empty data from MDS behaves like apply/apply! are OK #apply should fetch a new token if the current one is expired
+rspec ./spec/googleauth/compute_engine_spec.rb:151 # Google::Auth::GCECredentials when metadata query is enabled custom universe sets the universe
+rspec ./spec/googleauth/compute_engine_spec.rb:157 # Google::Auth::GCECredentials when metadata query is enabled custom universe sets the universe without explicit fetch_access_token
+rspec ./spec/googleauth/compute_engine_spec.rb:162 # Google::Auth::GCECredentials when metadata query is enabled custom universe supports updating the universe_domain
+rspec ./spec/googleauth/compute_engine_spec.rb:169 # Google::Auth::GCECredentials when metadata query is enabled custom universe prioritizes argument-specified universe domain
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:1:1]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should set access_token to the fetched value
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:1:2]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should set id_token to the fetched value
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:1:3]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should notify refresh listeners after updating
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:1:4]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should log when a logger is set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:1:5]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should not log to stdout when a logger is not set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:1:6]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #fetch_access_token should not log to stderr when a logger is not set
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:2:1]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply! should update the target hash with fetched access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:2:2]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply! should update the target hash with fetched ID token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:3:1]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK updater_proc should provide a proc that updates a hash with the access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:4:1]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply should not update the original hash with the access token
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:4:2]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply should add the token to the returned hash
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:4:3]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply should not fetch a new token if the current is not expired
+rspec './spec/googleauth/compute_engine_spec.rb[1:2:3:1:4:4]' # Google::Auth::GCECredentials when metadata query is enabled custom universe behaves like apply/apply! are OK #apply should fetch a new token if the current one is expired
+rspec ./spec/googleauth/compute_engine_spec.rb:183 # Google::Auth::GCECredentials when metadata query is enabled error in universe_domain results in an error
+rspec ./spec/googleauth/compute_engine_spec.rb:193 # Google::Auth::GCECredentials metadata is available #fetch_access_token should pass scopes
+rspec ./spec/googleauth/compute_engine_spec.rb:203 # Google::Auth::GCECredentials metadata is available Fetch ID tokens should parse out expiration time
+rspec ./spec/googleauth/compute_engine_spec.rb:231 # Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail if the metadata request returns a 404
+rspec ./spec/googleauth/compute_engine_spec.rb:240 # Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail if the metadata request returns a 403
+rspec ./spec/googleauth/compute_engine_spec.rb:249 # Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail if the metadata request returns a 500
+rspec ./spec/googleauth/compute_engine_spec.rb:258 # Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail if the metadata request returns an unexpected code
+rspec ./spec/googleauth/compute_engine_spec.rb:267 # Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail with AuthorizationError including detailed error info on timeout
+rspec ./spec/googleauth/compute_engine_spec.rb:281 # Google::Auth::GCECredentials metadata is unavailable #fetch_access_token should fail with AuthorizationError including detailed error info on connection error
+rspec ./spec/googleauth/compute_engine_spec.rb:297 # Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail if the metadata request returns a 404
+rspec ./spec/googleauth/compute_engine_spec.rb:306 # Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail if the metadata request returns a 403
+rspec ./spec/googleauth/compute_engine_spec.rb:315 # Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail if the metadata request returns a 500
+rspec ./spec/googleauth/compute_engine_spec.rb:324 # Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail if the metadata request returns an unexpected code
+rspec ./spec/googleauth/compute_engine_spec.rb:333 # Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail with Signet::AuthorizationError if request times out
+rspec ./spec/googleauth/compute_engine_spec.rb:340 # Google::Auth::GCECredentials metadata is unavailable Fetch ID tokens should fail with Signet::AuthorizationError if request fails
+rspec ./spec/googleauth/compute_engine_spec.rb:350 # Google::Auth::GCECredentials#on_gce? should be true when Metadata-Flavor is Google
+rspec ./spec/googleauth/compute_engine_spec.rb:359 # Google::Auth::GCECredentials#on_gce? should be false when Metadata-Flavor is not Google
+rspec ./spec/googleauth/compute_engine_spec.rb:368 # Google::Auth::GCECredentials#on_gce? should be false if the response is not 200
+rspec ./spec/googleauth/compute_engine_spec.rb:377 # Google::Auth::GCECredentials#on_gce? should honor GCE_METADATA_HOST environment variable
+rspec ./spec/googleauth/compute_engine_spec.rb:406 # Google::Auth::GCECredentials duplicates should duplicate the scope
+rspec ./spec/googleauth/compute_engine_spec.rb:411 # Google::Auth::GCECredentials duplicates should duplicate the universe_domain_overridden
+

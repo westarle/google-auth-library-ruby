@@ -26,6 +26,7 @@ require "logging"
 require "rspec/logging_helper"
 require "webmock/rspec"
 require "google/cloud/env"
+require "googleauth"
 
 
 # Allow Faraday to support test stubs

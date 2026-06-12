@@ -202,7 +202,7 @@ module Google
         case resp.status
         when 200
           build_token_hash resp.body, resp.headers["content-type"], resp.retrieval_monotonic_time
-        when 403, 500
+        when 500, 503
           raise Signet::UnexpectedStatusError, "Unexpected error code #{resp.status} #{UNEXPECTED_ERROR_SUFFIX}"
         when 404
           raise Signet::AuthorizationError, NO_METADATA_SERVER_ERROR
