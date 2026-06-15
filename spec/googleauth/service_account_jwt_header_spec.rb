@@ -217,4 +217,16 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
       expect(@creds.duplicate(logger: :foo).logger).to eq :foo
     end
   end
+
+  describe "#apply! with no audience and no scope" do
+    it "returns the hash unmodified (no-op)" do
+      client = clz.new(
+        private_key: @key.to_pem,
+        issuer:      client_email
+      )
+      hash = { foo: "bar" }
+      client.apply! hash
+      expect(hash).to eq({ foo: "bar" })
+    end
+  end
 end
