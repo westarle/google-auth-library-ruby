@@ -217,4 +217,44 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
       expect(@creds.duplicate(logger: :foo).logger).to eq :foo
     end
   end
+
+  describe "caching and refresh" do
+    it "caches and reuses the JWT token within the validity window" do
+      hash1 = { :jwt_aud_uri => "https://pubsub.googleapis.com/" }
+      @client.apply! hash1
+      token1 = hash1[:authorization]
+
+      # Sleep for 1 second to let Time.now change
+      sleep 1
+
+      hash2 = { :jwt_aud_uri => "https://pubsub.googleapis.com/" }
+      @client.apply! hash2
+      token2 = hash2[:authorization]
+
+      expect(token2).to eq(token1)
+    end
+
+    it "refreshes the token when it is close to expiration" do
+      now = Time.now
+      allow(Time).to receive(:now).and_return(now)
+      allow(Time).to receive(:new).and_return(now)
+
+      hash1 = { :jwt_aud_uri => "https://pubsub.googleapis.com/" }
+      @client.apply! hash1
+      token1 = hash1[:authorization]
+
+      # Move time forward by 55 seconds (expiry is now + 60, default skew/buffer is 10s)
+      # Wait, we need to check what buffer the implementation uses.
+      # If the implementation uses 10s buffer, then 55 seconds later it will refresh because 5s < 10s.
+      future_time = now + 55
+      allow(Time).to receive(:now).and_return(future_time)
+      allow(Time).to receive(:new).and_return(future_time)
+
+      hash2 = { :jwt_aud_uri => "https://pubsub.googleapis.com/" }
+      @client.apply! hash2
+      token2 = hash2[:authorization]
+
+      expect(token2).not_to eq(token1)
+    end
+  end
 end

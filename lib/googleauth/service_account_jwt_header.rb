@@ -106,10 +106,27 @@ module Google
       # hash.
       #
       # The jwt token is used as the value of a 'Bearer '.
+      REFRESH_BUFFER = 10
+
       def apply! a_hash, opts = {}
         jwt_aud_uri = a_hash.delete JWT_AUD_URI_KEY
         return a_hash if jwt_aud_uri.nil? && @scope.nil?
-        jwt_token = new_jwt_token jwt_aud_uri, opts
+
+        @token_cache ||= {}
+        cache_key = [jwt_aud_uri, Array(@scope).join(" ")].join(":")
+        cached = @token_cache[cache_key]
+        now = Time.now
+
+        if cached && cached[:expiry] > now + REFRESH_BUFFER
+          jwt_token = cached[:token]
+        else
+          jwt_token = new_jwt_token jwt_aud_uri, opts
+          @token_cache[cache_key] = {
+            token: jwt_token,
+            expiry: now + EXPIRY
+          }
+        end
+
         a_hash[AUTH_METADATA_KEY] = "Bearer #{jwt_token}"
         logger&.debug do
           hash = Digest::SHA256.hexdigest jwt_token
