@@ -166,6 +166,16 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
     end
   end
 
+  describe "#apply!" do
+    it "returns the hash unmodified if neither jwt_aud_uri nor scope is provided" do
+      original_hash = { "foo" => "bar" }
+      hash = original_hash.dup
+      result = @client.apply! hash
+      expect(result).to eq(original_hash)
+      expect(result.keys).not_to include(Google::Auth::ServiceAccountJwtHeaderCredentials::AUTH_METADATA_KEY)
+    end
+  end
+
   describe "#new_jwt_token" do
     let(:test_uri) { "https://www.googleapis.com/myservice" }
     let(:auth_prefix) { "Bearer " }
@@ -178,6 +188,21 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
 
       expect(payload["aud"]).to eq(test_uri) if not test_uri.nil?
       expect(payload["iss"]).to eq(client_email)
+    end
+
+    it "should merge additional claims and allow overriding audience" do
+      client_with_claims = clz.make_creds json_key_io: StringIO.new(cred_json_text), additional_claims: { "aud" => "override_uri", "custom" => "value" }
+      jwt_token = client_with_claims.new_jwt_token test_uri
+      payload, = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
+      expect(payload["aud"]).to eq("override_uri")
+      expect(payload["custom"]).to eq("value")
+    end
+
+    it "raises ArgumentError if both jwt_aud_uri and scope are provided" do
+      client_with_scope = clz.make_creds json_key_io: StringIO.new(cred_json_text), scope: "https://www.googleapis.com/auth/cloud-platform"
+      expect {
+        client_with_scope.new_jwt_token test_uri
+      }.to raise_error ArgumentError, "Cannot specify both jwt_aud_uri and scope"
     end
   end
 

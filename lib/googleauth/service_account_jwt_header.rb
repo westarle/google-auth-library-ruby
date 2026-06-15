@@ -50,8 +50,8 @@ module Google
       # @param json_key_io [IO] An IO object containing the JSON key
       # @param scope [string|array|nil] the scope(s) to access
       def self.make_creds options = {}
-        json_key_io, scope = options.values_at :json_key_io, :scope
-        new json_key_io: json_key_io, scope: scope
+        json_key_io, scope, additional_claims = options.values_at :json_key_io, :scope, :additional_claims
+        new json_key_io: json_key_io, scope: scope, additional_claims: additional_claims
       end
 
       # Initializes a ServiceAccountJwtHeaderCredentials.
@@ -73,6 +73,7 @@ module Google
         @project_id ||= CredentialsLoader.load_gcloud_project_id
         @signing_key = OpenSSL::PKey::RSA.new @private_key
         @scope = options[:scope] if options.key? :scope
+        @additional_claims = options[:additional_claims] || {}
         @logger = options[:logger] if options.key? :logger
       end
 
@@ -96,6 +97,7 @@ module Google
           project_id: project_id,
           quota_project_id: quota_project_id,
           universe_domain: universe_domain,
+          additional_claims: @additional_claims.dup,
           logger: logger
         }.merge(options)
 
@@ -133,6 +135,10 @@ module Google
 
       # Creates a jwt uri token.
       def new_jwt_token jwt_aud_uri = nil, options = {}
+        if jwt_aud_uri && @scope
+          raise ArgumentError, "Cannot specify both jwt_aud_uri and scope"
+        end
+
         now = Time.new
         skew = options[:skew] || 60
         assertion = {
@@ -142,10 +148,12 @@ module Google
           "iat" => (now - skew).to_i
         }
 
-        jwt_aud_uri = nil if @scope
-
         assertion["scope"] = Array(@scope).join " " if @scope
         assertion["aud"] = jwt_aud_uri if jwt_aud_uri
+        
+        @additional_claims.each do |k, v|
+          assertion[k.to_s] = v
+        end
 
         logger&.debug do
           Google::Logging::Message.from message: "JWT assertion: #{assertion}"
