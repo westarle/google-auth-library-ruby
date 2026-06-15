@@ -324,4 +324,35 @@ describe "#get_application_default" do
       end.to raise_error Google::Auth::InitializationError
     end
   end
+
+  describe "memoization" do
+    let(:stable_options) { { some_option: "value" } }
+
+    it "caches and returns the exact same credential object on subsequent calls" do
+      ENV.delete @var_name unless ENV[@var_name].nil?
+      Dir.mktmpdir do |dir|
+        key_path = File.join dir, ".config", WELL_KNOWN_PATH
+        key_path = File.join dir, WELL_KNOWN_PATH if OS.windows?
+        FileUtils.mkdir_p File.dirname(key_path)
+        
+        # Write a valid service account JSON
+        cred_json = {
+          private_key_id: "a_private_key_id",
+          private_key:    @key.to_pem,
+          client_email:   "app@developer.gserviceaccount.com",
+          client_id:      "app.apps.googleusercontent.com",
+          type:           "service_account"
+        }
+        File.write key_path, JSON.generate(cred_json)
+        
+        ENV["HOME"] = dir
+        ENV["APPDATA"] = dir
+
+        creds1 = Google::Auth.get_application_default @scope, stable_options
+        creds2 = Google::Auth.get_application_default @scope, stable_options
+        expect(creds1).to be(creds2)
+      end
+    end
+  end
 end
+

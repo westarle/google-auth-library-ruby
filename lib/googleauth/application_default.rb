@@ -53,12 +53,27 @@ module Google
     #       metadata credentials are available.
     # @raise [Google::Auth::InitializationError] If the credentials cannot be found
     def get_application_default scope = nil, options = {}
+      if options[:dememoize]
+        return get_application_default_without_cache scope, options
+      end
+
+      @cached_credentials ||= {}
+      key = [scope, options]
+      @cached_credentials[key] ||= get_application_default_without_cache scope, options
+    end
+
+    # @private
+    def get_application_default_without_cache scope = nil, options = {}
       creds = DefaultCredentials.from_env(scope, options) ||
               DefaultCredentials.from_well_known_path(scope, options) ||
               DefaultCredentials.from_system_default_path(scope, options)
       return creds unless creds.nil?
       raise InitializationError, NOT_FOUND_ERROR unless GCECredentials.on_gce? options
       GCECredentials.new options.merge(scope: scope)
+    end
+
+    def reset_cache!
+      @cached_credentials = {}
     end
   end
 end

@@ -42,6 +42,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     allow(Google::Auth::CredentialsLoader).to receive(:load_gcloud_project_id).and_return("my-project-id")
+    Google::Auth.reset_cache!
   end
 end
 
