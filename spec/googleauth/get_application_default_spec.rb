@@ -120,6 +120,26 @@ describe "#get_application_default" do
       end
     end
 
+    it "skips the well-known location if HOME and APPDATA are nil even if relative file exists" do
+      # Verify that when HOME and APPDATA are unset, the fallback resolution gracefully 
+      # bypasses the well-known location rather than improperly resolving against the 
+      # relative current working directory or crashing.
+      Google::Cloud.env.compute_smbios.with_override_product_name "Someone else" do
+        ENV.delete @var_name unless ENV[@var_name].nil?
+        ENV["HOME"] = nil
+        ENV["APPDATA"] = nil
+        FakeFS do
+          rel_path = OS.windows? ? WELL_KNOWN_PATH : File.join(".config", WELL_KNOWN_PATH)
+          FileUtils.mkdir_p File.dirname(rel_path)
+          File.write rel_path, cred_json_text
+          expect do
+            Google::Auth.get_application_default(@scope, options)
+          end.to raise_error Google::Auth::InitializationError
+        end
+      end
+    end
+
+
     it "succeeds with default file without a scope" do
       ENV.delete @var_name unless ENV[@var_name].nil?
       Dir.mktmpdir do |dir|

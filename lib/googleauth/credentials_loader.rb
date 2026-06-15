@@ -106,7 +106,8 @@ module Google
         options = interpret_options scope, options
         home_var = OS.windows? ? "APPDATA" : "HOME"
         base = WELL_KNOWN_PATH
-        root = ENV[home_var].nil? ? "" : ENV[home_var]
+        root = ENV[home_var]
+        return nil if root.nil? || root.empty?
         base = File.join ".config", base unless OS.windows?
         path = File.join root, base
         return nil unless File.exist? path
