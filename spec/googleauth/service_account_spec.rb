@@ -420,4 +420,26 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
-end
+
+  describe "domain-wide delegation" do
+    it "verify token generation with a subject properly handles the sub claim" do
+      @client.sub = "user@example.com"
+      
+      token_request_stub = stub_request(:post, "https://www.googleapis.com/oauth2/v4/token")
+        .with do |request|
+          params = Addressable::URI.form_unencode request.body
+          claim, _header = JWT.decode(params.assoc("assertion").last,
+                                      @key.public_key, true,
+                                      algorithm: "RS256")
+          claim["sub"] == "user@example.com"
+        end
+        .to_return(body: JSON.generate(access_token: "token-with-sub", token_type: "Bearer", expires_in: 3600),
+                   status: 200,
+                   headers: { "Content-Type" => "application/json" })
+
+      @client.fetch_access_token!
+      expect(token_request_stub).to have_been_requested
+    end
+  end
+
+  end
