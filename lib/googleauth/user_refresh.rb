@@ -48,7 +48,7 @@ module Google
       # @param json_key_io [IO] An IO object containing the JSON key
       # @param scope [string|array|nil] the scope(s) to access
       def self.make_creds options = {} # rubocop:disable Metrics/MethodLength
-        json_key_io, scope = options.values_at :json_key_io, :scope
+        json_key_io, scope, token_credential_uri = options.values_at :json_key_io, :scope, :token_credential_uri
         user_creds = if json_key_io
                        json_key = JSON.parse json_key_io.read
                        if json_key.key? "type"
@@ -69,7 +69,7 @@ module Google
                          "universe_domain" => nil
                        }
                      end
-        new(token_credential_uri: TOKEN_CRED_URI,
+        new(token_credential_uri: token_credential_uri || user_creds["token_uri"] || user_creds["token_credential_uri"] || TOKEN_CRED_URI,
             client_id:            user_creds["client_id"],
             client_secret:        user_creds["client_secret"],
             refresh_token:        user_creds["refresh_token"],

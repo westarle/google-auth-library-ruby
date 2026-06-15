@@ -447,6 +447,69 @@ describe Google::Auth::UserRefreshCredentials do
     end
   end
 
+  describe "custom token_credential_uri override" do
+    let(:custom_uri) { "https://example.com/custom_token" }
+
+    it "targets overridden URI when configured on initialization" do
+      client = UserRefreshCredentials.new(
+        token_credential_uri: custom_uri,
+        client_id:            "client123",
+        client_secret:        "client_secret123",
+        refresh_token:        "refresh_token123"
+      )
+
+      stub = stub_request(:post, custom_uri)
+        .with(body: hash_including("grant_type" => "refresh_token"))
+        .to_return(body:    JSON.generate("access_token" => "new_access_token",
+                                          "token_type"   => "Bearer",
+                                          "expires_in"   => 3600),
+                   status:  200,
+                   headers: { "Content-Type" => "application/json" })
+
+      client.fetch_access_token!
+      expect(client.access_token).to eq("new_access_token")
+      expect(stub).to have_been_requested
+    end
+
+    it "targets overridden URI when configured in make_creds options" do
+      client = UserRefreshCredentials.make_creds(
+        json_key_io: StringIO.new(cred_json_text),
+        token_credential_uri: custom_uri
+      )
+
+      stub = stub_request(:post, custom_uri)
+        .with(body: hash_including("grant_type" => "refresh_token"))
+        .to_return(body:    JSON.generate("access_token" => "new_access_token",
+                                          "token_type"   => "Bearer",
+                                          "expires_in"   => 3600),
+                   status:  200,
+                   headers: { "Content-Type" => "application/json" })
+
+      client.fetch_access_token!
+      expect(client.access_token).to eq("new_access_token")
+      expect(stub).to have_been_requested
+    end
+
+    it "targets overridden URI when parsed from JSON key" do
+      cred_json_with_token_uri = cred_json.merge(token_uri: custom_uri)
+      client = UserRefreshCredentials.make_creds(
+        json_key_io: StringIO.new(JSON.generate(cred_json_with_token_uri))
+      )
+
+      stub = stub_request(:post, custom_uri)
+        .with(body: hash_including("grant_type" => "refresh_token"))
+        .to_return(body:    JSON.generate("access_token" => "new_access_token",
+                                          "token_type"   => "Bearer",
+                                          "expires_in"   => 3600),
+                   status:  200,
+                   headers: { "Content-Type" => "application/json" })
+
+      client.fetch_access_token!
+      expect(client.access_token).to eq("new_access_token")
+      expect(stub).to have_been_requested
+    end
+  end
+
   describe "duplicates" do
     before :example do
       @key = OpenSSL::PKey::RSA.new 2048
