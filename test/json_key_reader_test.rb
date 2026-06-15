@@ -31,12 +31,13 @@ describe Google::Auth::JsonKeyReader do
         "client_email" => "dummy@example.com",
         "project_id" => "dummy-project",
         "quota_project_id" => "quota-project",
-        "universe_domain" => "googleapis.com"
+        "universe_domain" => "googleapis.com",
+        "private_key_id" => "dummy-key-id"
       }
       
       json_key_io = StringIO.new(JSON.generate(json_key_hash))
       
-      private_key, client_email, project_id, quota_project_id, universe_domain = 
+      private_key, client_email, project_id, quota_project_id, universe_domain, private_key_id = 
         dummy_reader.read_json_key(json_key_io)
       
       _(private_key).must_equal "dummy-key"
@@ -44,6 +45,7 @@ describe Google::Auth::JsonKeyReader do
       _(project_id).must_equal "dummy-project"
       _(quota_project_id).must_equal "quota-project"
       _(universe_domain).must_equal "googleapis.com"
+      _(private_key_id).must_equal "dummy-key-id"
     end
     
     it "raises InitializationError when client_email is missing" do

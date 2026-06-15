@@ -25,8 +25,8 @@ module Google
       # Reads a JSON key from an IO object and extracts common fields.
       #
       # @param json_key_io [IO] An IO object containing the JSON key
-      # @return [Array(String, String, String, String, String)] An array containing:
-      #   private_key, client_email, project_id, quota_project_id, and universe_domain
+      # @return [Array(String, String, String, String, String, String)] An array containing:
+      #   private_key, client_email, project_id, quota_project_id, universe_domain, and private_key_id
       # @raise [Google::Auth::InitializationError] If client_email or private_key
       #   fields are missing from the JSON
       def read_json_key json_key_io
@@ -42,7 +42,8 @@ module Google
           json_key["client_email"],
           json_key["project_id"],
           json_key["quota_project_id"],
-          json_key["universe_domain"]
+          json_key["universe_domain"],
+          json_key["private_key_id"]
         ]
       end
     end

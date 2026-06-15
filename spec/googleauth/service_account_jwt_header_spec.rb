@@ -170,14 +170,34 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
     let(:test_uri) { "https://www.googleapis.com/myservice" }
     let(:auth_prefix) { "Bearer " }
 
-    it "should return a token without Bearer prefix" do
+    it "should return a token without Bearer prefix and include correct headers and claims" do
       jwt_token = @client.new_jwt_token test_uri
       expect(jwt_token).to_not be_nil
       expect(jwt_token.start_with?(auth_prefix)).to be false
-      payload, = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
+      payload, header = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
 
       expect(payload["aud"]).to eq(test_uri) if not test_uri.nil?
       expect(payload["iss"]).to eq(client_email)
+      expect(payload["sub"]).to eq(client_email)
+      expect(payload["iat"]).to be_within(10).of(Time.now.to_i - 60)
+      expect(payload["exp"]).to eq(payload["iat"] + 60 + 60) # exp = (now + 60), iat = (now - 60) -> exp = iat + 120
+
+      expect(header["alg"]).to eq("RS256")
+      expect(header["typ"]).to eq("JWT")
+      expect(header["kid"]).to eq("a_private_key_id")
+    end
+
+    it "falls back gracefully when private_key_id is missing" do
+      cred_json_missing_kid = cred_json.dup
+      cred_json_missing_kid.delete(:private_key_id)
+      client_missing_kid = clz.make_creds json_key_io: StringIO.new(JSON.generate(cred_json_missing_kid))
+      
+      jwt_token = client_missing_kid.new_jwt_token test_uri
+      expect(jwt_token).to_not be_nil
+      
+      _, header = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
+      expect(header).not_to have_key("kid")
+      expect(header["alg"]).to eq("RS256")
     end
   end
 
