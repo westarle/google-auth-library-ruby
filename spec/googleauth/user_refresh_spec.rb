@@ -213,6 +213,20 @@ describe Google::Auth::UserRefreshCredentials do
       expect(UserRefreshCredentials.from_well_known_path(@scope)).to be_nil
     end
 
+    it "fails if the file is malformed JSON" do
+      Dir.mktmpdir do |dir|
+        key_path = File.join dir, ".config", @known_path
+        key_path = File.join dir, @known_path if OS.windows?
+        FileUtils.mkdir_p File.dirname(key_path)
+        File.write key_path, "{ malformed json"
+        ENV["HOME"] = dir
+        ENV["APPDATA"] = dir
+        expect { @clz.from_well_known_path @scope }
+          .to raise_error Google::Auth::InitializationError
+      end
+    end
+
+
     it "fails if the file is invalid" do
       needed = %w[client_id client_secret refresh_token]
       needed.each do |missing|
