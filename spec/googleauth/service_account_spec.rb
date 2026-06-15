@@ -420,4 +420,27 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
+
+  describe "when sub or person is configured (domain-wide delegation)" do
+    it "disables self-signed JWT flow even if scope is nil" do
+      client = ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(cred_json_text)
+      )
+      expect(client.enable_self_signed_jwt?).to be true
+      
+      client.sub = "user@example.com"
+      expect(client.enable_self_signed_jwt?).to be false
+    end
+
+    it "disables self-signed JWT flow even if enable_self_signed_jwt is true" do
+      client = ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(cred_json_text),
+        enable_self_signed_jwt: true
+      )
+      expect(client.enable_self_signed_jwt?).to be true
+      
+      client.person = "user@example.com"
+      expect(client.enable_self_signed_jwt?).to be false
+    end
+  end
 end

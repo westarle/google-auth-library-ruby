@@ -46,11 +46,12 @@ module Google
       CREDENTIAL_TYPE_NAME = "service_account".freeze
 
       def enable_self_signed_jwt?
-        # Use a self-singed JWT if there's no information that can be used to
+        # Use a self-signed JWT if there's no information that can be used to
         # obtain an OAuth token, OR if there are scopes but also an assertion
         # that they are default scopes that shouldn't be used to fetch a token,
         # OR we are not in the default universe and thus OAuth isn't supported.
-        target_audience.nil? && (scope.nil? || @enable_self_signed_jwt || universe_domain != "googleapis.com")
+        # But if domain-wide delegation is configured, we must use OAuth token exchange.
+        sub.to_s.empty? && person.to_s.empty? && target_audience.nil? && (scope.nil? || @enable_self_signed_jwt || universe_domain != "googleapis.com")
       end
 
       # Creates a ServiceAccountCredentials.
