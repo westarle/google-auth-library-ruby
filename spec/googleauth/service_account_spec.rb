@@ -119,6 +119,18 @@ describe Google::Auth::ServiceAccountCredentials do
     )
   end
 
+  it "raises an error if both scope and target_audience are specified" do
+    expect do
+      ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(cred_json_text),
+        scope: "https://www.googleapis.com/auth/userinfo.profile",
+        target_audience: "https://pubsub.googleapis.com/"
+      )
+    end.to raise_error(ArgumentError, "Cannot specify both scope and target_audience")
+  end
+
+
+
   it "succeeds if the credential type is missing (uses default)" do
     key_without_type = cred_json.reject { |k, _| k == :type }
     expect do
@@ -420,4 +432,5 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
-end
+
+  end
