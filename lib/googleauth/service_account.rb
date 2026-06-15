@@ -134,6 +134,7 @@ module Google
         @quota_project_id = options[:quota_project_id]
         @enable_self_signed_jwt = options[:enable_self_signed_jwt] ? true : false
         super options
+        check_universe_and_delegation
       end
 
       # Extends the base class to use a transient
@@ -174,6 +175,8 @@ module Google
 
         super(options)
 
+        check_universe_and_delegation
+
         self
       end
 
@@ -182,6 +185,21 @@ module Google
       # @return [String] the email address of the service account
       def principal
         @issuer
+      end
+
+      def sub= value
+        super
+        check_universe_and_delegation
+      end
+
+      def person= value
+        super
+        check_universe_and_delegation
+      end
+
+      def universe_domain= value
+        super
+        check_universe_and_delegation
       end
 
       private
@@ -198,6 +216,12 @@ module Google
           logger:           logger
         )
         alt.apply! a_hash
+      end
+
+      def check_universe_and_delegation
+        if universe_domain != "googleapis.com" && (!sub.to_s.empty? || !person.to_s.empty?)
+          raise InitializationError, "Domain-wide delegation is not supported in custom universe domains"
+        end
       end
 
       # @private

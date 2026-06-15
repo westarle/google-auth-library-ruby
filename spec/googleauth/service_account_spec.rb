@@ -420,4 +420,24 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
+
+  describe "with custom universe domain and domain-wide delegation" do
+    it "raises an error if custom universe domain and sub delegation is set" do
+      cred_json_custom = cred_json.merge(universe_domain: "custom.domain")
+      expect do
+        ServiceAccountCredentials.make_creds(
+          json_key_io: StringIO.new(JSON.generate(cred_json_custom))
+        ).tap { |c| c.sub = "user@example.com" }
+      end.to raise_error(Google::Auth::InitializationError, "Domain-wide delegation is not supported in custom universe domains")
+    end
+
+    it "raises an error if custom universe domain and person delegation is set" do
+      cred_json_custom = cred_json.merge(universe_domain: "custom.domain")
+      expect do
+        ServiceAccountCredentials.make_creds(
+          json_key_io: StringIO.new(JSON.generate(cred_json_custom))
+        ).tap { |c| c.person = "user@example.com" }
+      end.to raise_error(Google::Auth::InitializationError, "Domain-wide delegation is not supported in custom universe domains")
+    end
+  end
 end
