@@ -420,4 +420,29 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
+
+  context "when person (domain-wide delegation) is configured" do
+    it "disables self-signed JWT and uses OAuth token exchange" do
+      client = ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(cred_json_text),
+        scope: "https://www.googleapis.com/auth/userinfo.profile",
+        person: "admin@example.com"
+      )
+      expect(client.enable_self_signed_jwt?).to be false
+      
+      make_auth_stubs(access_token: "1/abcde")
+      h = {}
+      client.apply!(h)
+      expect(h[:authorization]).to eq("Bearer 1/abcde")
+    end
+
+    it "raises InitializationError if universe domain is not default" do
+      expect {
+        ServiceAccountCredentials.make_creds(
+          json_key_io: StringIO.new(cred_json_text_with_universe_domain),
+          person: "admin@example.com"
+        )
+      }.to raise_error(Google::Auth::InitializationError, /Domain-wide delegation.*not supported/)
+    end
+  end
 end

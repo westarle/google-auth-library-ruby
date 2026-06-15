@@ -50,7 +50,7 @@ module Google
         # obtain an OAuth token, OR if there are scopes but also an assertion
         # that they are default scopes that shouldn't be used to fetch a token,
         # OR we are not in the default universe and thus OAuth isn't supported.
-        target_audience.nil? && (scope.nil? || @enable_self_signed_jwt || universe_domain != "googleapis.com")
+        target_audience.nil? && person.nil? && sub.nil? && (scope.nil? || @enable_self_signed_jwt || universe_domain != "googleapis.com")
       end
 
       # Creates a ServiceAccountCredentials.
@@ -59,9 +59,9 @@ module Google
       # @param scope [string|array|nil] the scope(s) to access
       # @raise [ArgumentError] If both scope and target_audience are specified
       def self.make_creds options = {} # rubocop:disable Metrics/MethodLength
-        json_key_io, scope, enable_self_signed_jwt, target_audience, audience, token_credential_uri =
+        json_key_io, scope, enable_self_signed_jwt, target_audience, audience, token_credential_uri, person =
           options.values_at :json_key_io, :scope, :enable_self_signed_jwt, :target_audience,
-                            :audience, :token_credential_uri
+                            :audience, :token_credential_uri, :person
         raise ArgumentError, "Cannot specify both scope and target_audience" if scope && target_audience
 
         private_key, client_email, project_id, quota_project_id, universe_domain =
@@ -85,6 +85,7 @@ module Google
             scope:                  scope,
             enable_self_signed_jwt: enable_self_signed_jwt,
             target_audience:        target_audience,
+            person:                 person,
             issuer:                 client_email,
             signing_key:            OpenSSL::PKey::RSA.new(private_key),
             project_id:             project_id,
@@ -134,6 +135,10 @@ module Google
         @quota_project_id = options[:quota_project_id]
         @enable_self_signed_jwt = options[:enable_self_signed_jwt] ? true : false
         super options
+        
+        if universe_domain != "googleapis.com" && (!person.nil? || !sub.nil?)
+          raise Google::Auth::InitializationError, "Domain-wide delegation (person/sub) is not supported with custom universe domains."
+        end
       end
 
       # Extends the base class to use a transient
