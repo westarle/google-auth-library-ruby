@@ -45,7 +45,8 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
       client_email:   client_email,
       client_id:      "app.apps.googleusercontent.com",
       type:           "service_account",
-      project_id:     "a_project_id"
+      project_id:     "a_project_id",
+      quota_project_id: "b_project_id"
     }
   end
 
@@ -161,8 +162,18 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
         ENV["APPDATA"] = dir
         credentials = clz.from_well_known_path @scope
         expect(credentials.project_id).to eq(cred_json[:project_id])
-        expect(credentials.quota_project_id).to be_nil
+        expect(credentials.quota_project_id).to eq(cred_json[:quota_project_id])
       end
+    end
+  end
+
+  describe "#apply!" do
+    it "adds telemetry headers and quota project ID if present" do
+      hash = { :jwt_aud_uri => "https://foo.com", "x-goog-api-client" => "gl-ruby/1.0" }
+      result = @client.apply! hash
+      
+      expect(result["x-goog-api-client"]).to eq("gl-ruby/1.0 cred-type/jwt")
+      expect(result["x-goog-user-project"]).to eq("b_project_id")
     end
   end
 
@@ -203,7 +214,7 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
     end
 
     it "should duplicate the quota_project_id" do
-      expect(@creds.quota_project_id).to eq nil
+      expect(@creds.quota_project_id).to eq "b_project_id"
       expect(@creds.duplicate(quota_project_id: "test-quota-project-id-2").quota_project_id).to eq "test-quota-project-id-2"
     end
 

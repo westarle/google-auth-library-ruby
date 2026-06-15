@@ -111,6 +111,14 @@ module Google
         return a_hash if jwt_aud_uri.nil? && @scope.nil?
         jwt_token = new_jwt_token jwt_aud_uri, opts
         a_hash[AUTH_METADATA_KEY] = "Bearer #{jwt_token}"
+        a_hash["x-goog-user-project"] = @quota_project_id if @quota_project_id
+
+        if a_hash.key?("x-goog-api-client")
+          a_hash["x-goog-api-client"] += " cred-type/jwt"
+        else
+          a_hash["x-goog-api-client"] = "cred-type/jwt"
+        end
+
         logger&.debug do
           hash = Digest::SHA256.hexdigest jwt_token
           Google::Logging::Message.from message: "Sending JWT auth token. (sha256:#{hash})"
