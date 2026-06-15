@@ -420,4 +420,34 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
+
+  describe "private key formats" do
+    it "succeeds with a PKCS#1 formatted private key" do
+      expect(cred_json[:private_key]).to start_with("-----BEGIN RSA PRIVATE KEY-----")
+      expect do
+        ServiceAccountCredentials.make_creds(
+          json_key_io: StringIO.new(cred_json_text)
+        )
+      end.not_to raise_error
+    end
+
+    it "succeeds with a PKCS#8 formatted private key" do
+      cred_json_pkcs8 = cred_json.merge(private_key: @key.private_to_pem)
+      expect(cred_json_pkcs8[:private_key]).to start_with("-----BEGIN PRIVATE KEY-----")
+      expect do
+        ServiceAccountCredentials.make_creds(
+          json_key_io: StringIO.new(JSON.generate(cred_json_pkcs8))
+        )
+      end.not_to raise_error
+    end
+
+    it "raises OpenSSL::PKey::RSAError if private_key is malformed" do
+      cred_json_malformed = cred_json.merge(private_key: "not a valid key")
+      expect do
+        ServiceAccountCredentials.make_creds(
+          json_key_io: StringIO.new(JSON.generate(cred_json_malformed))
+        )
+      end.to raise_error(OpenSSL::PKey::RSAError)
+    end
+  end
 end
