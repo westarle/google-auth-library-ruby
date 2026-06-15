@@ -217,4 +217,30 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
       expect(@creds.duplicate(logger: :foo).logger).to eq :foo
     end
   end
+
+  describe "#apply! telemetry headers" do
+    it "adds x-goog-api-client header with cred-type/jwt if not present" do
+      hash = { :jwt_aud_uri => "https://pubsub.googleapis.com/" }
+      @client.apply! hash
+      expect(hash["x-goog-api-client"]).to eq("cred-type/jwt")
+    end
+
+    it "appends to existing x-goog-api-client string header" do
+      hash = {
+        :jwt_aud_uri => "https://pubsub.googleapis.com/",
+        "x-goog-api-client" => "gl-ruby/3.3.0 gccl/1.2.3"
+      }
+      @client.apply! hash
+      expect(hash["x-goog-api-client"]).to eq("gl-ruby/3.3.0 gccl/1.2.3 cred-type/jwt")
+    end
+
+    it "appends to existing x-goog-api-client symbol header" do
+      hash = {
+        :jwt_aud_uri => "https://pubsub.googleapis.com/",
+        :"x-goog-api-client" => "gl-ruby/3.3.0 gccl/1.2.3"
+      }
+      @client.apply! hash
+      expect(hash[:"x-goog-api-client"]).to eq("gl-ruby/3.3.0 gccl/1.2.3 cred-type/jwt")
+    end
+  end
 end
