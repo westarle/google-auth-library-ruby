@@ -420,4 +420,20 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
+
+  describe "with additional_claims and self-signed JWT" do
+    it "propagates additional claims to the generated JWT" do
+      client = ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(cred_json_text),
+        additional_claims: { custom_key: "custom_val" }
+      )
+      expect(client.enable_self_signed_jwt?).to be true
+      
+      hash = { :jwt_aud_uri => "https://pubsub.googleapis.com/" }
+      client.apply! hash
+      token = hash[:authorization].sub("Bearer ", "")
+      payload, = JWT.decode token, @key.public_key, true, algorithm: "RS256"
+      expect(payload["custom_key"]).to eq("custom_val")
+    end
+  end
 end

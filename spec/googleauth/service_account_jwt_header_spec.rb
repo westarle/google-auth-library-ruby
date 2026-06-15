@@ -179,6 +179,25 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
       expect(payload["aud"]).to eq(test_uri) if not test_uri.nil?
       expect(payload["iss"]).to eq(client_email)
     end
+
+    it "merges additional claims from initialization options" do
+      client = clz.new(
+        private_key: @key.to_pem,
+        issuer:      client_email,
+        additional_claims: { custom_key: "custom_value", aud: "override_aud" }
+      )
+      jwt_token = client.new_jwt_token test_uri
+      payload, = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
+      expect(payload["custom_key"]).to eq("custom_value")
+      expect(payload["aud"]).to eq("override_aud")
+    end
+
+    it "merges additional claims from token options" do
+      jwt_token = @client.new_jwt_token test_uri, additional_claims: { custom_key: "custom_value", aud: "override_aud" }
+      payload, = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
+      expect(payload["custom_key"]).to eq("custom_value")
+      expect(payload["aud"]).to eq("override_aud")
+    end
   end
 
   describe "duplicates" do

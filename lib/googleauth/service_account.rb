@@ -40,6 +40,7 @@ module Google
       extend JsonKeyReader
       attr_reader :project_id
       attr_reader :quota_project_id
+      attr_reader :additional_claims
 
       # @private
       # @type [::String] The type name for this credential.
@@ -59,9 +60,9 @@ module Google
       # @param scope [string|array|nil] the scope(s) to access
       # @raise [ArgumentError] If both scope and target_audience are specified
       def self.make_creds options = {} # rubocop:disable Metrics/MethodLength
-        json_key_io, scope, enable_self_signed_jwt, target_audience, audience, token_credential_uri =
+        json_key_io, scope, enable_self_signed_jwt, target_audience, audience, token_credential_uri, additional_claims =
           options.values_at :json_key_io, :scope, :enable_self_signed_jwt, :target_audience,
-                            :audience, :token_credential_uri
+                            :audience, :token_credential_uri, :additional_claims
         raise ArgumentError, "Cannot specify both scope and target_audience" if scope && target_audience
 
         private_key, client_email, project_id, quota_project_id, universe_domain =
@@ -89,7 +90,8 @@ module Google
             signing_key:            OpenSSL::PKey::RSA.new(private_key),
             project_id:             project_id,
             quota_project_id:       quota_project_id,
-            universe_domain:        universe_domain || "googleapis.com")
+            universe_domain:        universe_domain || "googleapis.com",
+            additional_claims:      additional_claims)
           .configure_connection(options)
       end
 
@@ -112,6 +114,7 @@ module Google
             enable_self_signed_jwt: @enable_self_signed_jwt,
             project_id: project_id,
             quota_project_id: quota_project_id,
+            additional_claims: @additional_claims,
             logger: logger
           }.merge(options)
         )
@@ -132,6 +135,7 @@ module Google
       def initialize options = {}
         @project_id = options[:project_id]
         @quota_project_id = options[:quota_project_id]
+        @additional_claims = options[:additional_claims] || {}
         @enable_self_signed_jwt = options[:enable_self_signed_jwt] ? true : false
         super options
       end
@@ -195,6 +199,7 @@ module Google
           quota_project_id: @quota_project_id,
           universe_domain:  universe_domain,
           scope:            scope,
+          additional_claims: @additional_claims,
           logger:           logger
         )
         alt.apply! a_hash

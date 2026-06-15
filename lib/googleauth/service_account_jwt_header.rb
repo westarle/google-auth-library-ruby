@@ -42,6 +42,7 @@ module Google
 
       attr_reader :project_id
       attr_reader :quota_project_id
+      attr_reader :additional_claims
       attr_accessor :universe_domain
       attr_accessor :logger
 
@@ -74,6 +75,7 @@ module Google
         @signing_key = OpenSSL::PKey::RSA.new @private_key
         @scope = options[:scope] if options.key? :scope
         @logger = options[:logger] if options.key? :logger
+        @additional_claims = options[:additional_claims] || {}
       end
 
       # Creates a duplicate of these credentials
@@ -96,6 +98,7 @@ module Google
           project_id: project_id,
           quota_project_id: quota_project_id,
           universe_domain: universe_domain,
+          additional_claims: @additional_claims,
           logger: logger
         }.merge(options)
 
@@ -146,6 +149,11 @@ module Google
 
         assertion["scope"] = Array(@scope).join " " if @scope
         assertion["aud"] = jwt_aud_uri if jwt_aud_uri
+
+        assertion.merge!(@additional_claims.transform_keys(&:to_s)) if @additional_claims
+        if options[:additional_claims]
+          assertion.merge!(options[:additional_claims].transform_keys(&:to_s))
+        end
 
         logger&.debug do
           Google::Logging::Message.from message: "JWT assertion: #{assertion}"
