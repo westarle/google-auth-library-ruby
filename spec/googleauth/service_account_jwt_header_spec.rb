@@ -179,6 +179,35 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
       expect(payload["aud"]).to eq(test_uri) if not test_uri.nil?
       expect(payload["iss"]).to eq(client_email)
     end
+
+    it "includes the correct header structure with alg, typ, and kid" do
+      jwt_token = @client.new_jwt_token test_uri
+      _, header = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
+      expect(header["alg"]).to eq("RS256")
+      expect(header["typ"]).to eq("JWT")
+      expect(header["kid"]).to eq("a_private_key_id")
+    end
+
+    it "gracefully falls back when private_key_id is missing/nil" do
+      cred_json_no_kid = cred_json.reject { |k| k == :private_key_id }
+      client_no_kid = clz.make_creds(
+        json_key_io: StringIO.new(JSON.generate(cred_json_no_kid))
+      )
+      jwt_token = client_no_kid.new_jwt_token test_uri
+      _, header = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
+      expect(header["alg"]).to eq("RS256")
+      expect(header["typ"]).to eq("JWT")
+      expect(header).not_to include("kid")
+    end
+
+    it "includes the correct default claims in the payload" do
+      jwt_token = @client.new_jwt_token test_uri, skew: 0
+      payload, = JWT.decode jwt_token, @key.public_key, true, algorithm: "RS256"
+      expect(payload["iss"]).to eq(client_email)
+      expect(payload["sub"]).to eq(client_email)
+      expect(payload["iat"]).to be_within(10).of(Time.now.to_i)
+      expect(payload["exp"]).to eq(payload["iat"] + 60)
+    end
   end
 
   describe "duplicates" do

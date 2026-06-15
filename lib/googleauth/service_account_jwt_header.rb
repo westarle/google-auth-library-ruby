@@ -42,6 +42,7 @@ module Google
 
       attr_reader :project_id
       attr_reader :quota_project_id
+      attr_reader :private_key_id
       attr_accessor :universe_domain
       attr_accessor :logger
 
@@ -60,7 +61,7 @@ module Google
       def initialize options = {}
         json_key_io = options[:json_key_io]
         if json_key_io
-          @private_key, @issuer, @project_id, @quota_project_id, @universe_domain =
+          @private_key, @issuer, @project_id, @quota_project_id, @universe_domain, @private_key_id =
             self.class.read_json_key json_key_io
         else
           @private_key = options.key?(:private_key) ? options[:private_key] : ENV[CredentialsLoader::PRIVATE_KEY_VAR]
@@ -68,6 +69,7 @@ module Google
           @project_id = options.key?(:project_id) ? options[:project_id] : ENV[CredentialsLoader::PROJECT_ID_VAR]
           @quota_project_id = options[:quota_project_id] if options.key? :quota_project_id
           @universe_domain = options[:universe_domain] if options.key? :universe_domain
+          @private_key_id = options[:private_key_id] if options.key? :private_key_id
         end
         @universe_domain ||= "googleapis.com"
         @project_id ||= CredentialsLoader.load_gcloud_project_id
@@ -96,6 +98,7 @@ module Google
           project_id: project_id,
           quota_project_id: quota_project_id,
           universe_domain: universe_domain,
+          private_key_id: @private_key_id,
           logger: logger
         }.merge(options)
 
@@ -151,7 +154,10 @@ module Google
           Google::Logging::Message.from message: "JWT assertion: #{assertion}"
         end
 
-        JWT.encode assertion, @signing_key, SIGNING_ALGORITHM
+        headers = { "typ" => "JWT" }
+        headers["kid"] = @private_key_id if @private_key_id
+
+        JWT.encode assertion, @signing_key, SIGNING_ALGORITHM, headers
       end
 
       # Duck-types the corresponding method from BaseClient

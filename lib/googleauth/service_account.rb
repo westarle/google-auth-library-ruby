@@ -40,6 +40,7 @@ module Google
       extend JsonKeyReader
       attr_reader :project_id
       attr_reader :quota_project_id
+      attr_reader :private_key_id
 
       # @private
       # @type [::String] The type name for this credential.
@@ -64,7 +65,7 @@ module Google
                             :audience, :token_credential_uri
         raise ArgumentError, "Cannot specify both scope and target_audience" if scope && target_audience
 
-        private_key, client_email, project_id, quota_project_id, universe_domain =
+        private_key, client_email, project_id, quota_project_id, universe_domain, private_key_id =
           if json_key_io
             json_key = JSON.parse json_key_io.read
             if json_key.key? "type"
@@ -89,7 +90,8 @@ module Google
             signing_key:            OpenSSL::PKey::RSA.new(private_key),
             project_id:             project_id,
             quota_project_id:       quota_project_id,
-            universe_domain:        universe_domain || "googleapis.com")
+            universe_domain:        universe_domain || "googleapis.com",
+            private_key_id:         private_key_id)
           .configure_connection(options)
       end
 
@@ -112,6 +114,7 @@ module Google
             enable_self_signed_jwt: @enable_self_signed_jwt,
             project_id: project_id,
             quota_project_id: quota_project_id,
+            private_key_id: @private_key_id,
             logger: logger
           }.merge(options)
         )
@@ -132,6 +135,7 @@ module Google
       def initialize options = {}
         @project_id = options[:project_id]
         @quota_project_id = options[:quota_project_id]
+        @private_key_id = options[:private_key_id]
         @enable_self_signed_jwt = options[:enable_self_signed_jwt] ? true : false
         super options
       end
@@ -195,6 +199,7 @@ module Google
           quota_project_id: @quota_project_id,
           universe_domain:  universe_domain,
           scope:            scope,
+          private_key_id:   @private_key_id,
           logger:           logger
         )
         alt.apply! a_hash
@@ -209,7 +214,7 @@ module Google
         private_key = unescape ENV[CredentialsLoader::PRIVATE_KEY_VAR]
         client_email = ENV[CredentialsLoader::CLIENT_EMAIL_VAR]
         project_id = ENV[CredentialsLoader::PROJECT_ID_VAR]
-        [private_key, client_email, project_id, nil, nil]
+        [private_key, client_email, project_id, nil, nil, nil]
       end
 
       private_class_method :creds_from_env
