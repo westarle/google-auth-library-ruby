@@ -22,6 +22,16 @@ require "spec_helper"
 
 shared_examples "apply/apply! are OK" do
   let(:auth_key) { :authorization }
+  let(:expected_headers) do
+    lambda do |client, token, base_headers = { foo: "bar" }|
+      headers = base_headers.merge(auth_key => "Bearer #{token}")
+      if client.respond_to?(:quota_project_id) && client.quota_project_id
+        headers[:"x-goog-user-project"] = client.quota_project_id
+      end
+      headers
+    end
+  end
+
 
   # tests that use these examples need to define
   #
@@ -92,7 +102,7 @@ shared_examples "apply/apply! are OK" do
 
       md = { foo: "bar" }
       @client.apply! md
-      want = { :foo => "bar", auth_key => "Bearer #{token}" }
+      want = expected_headers.call(@client, token)
       expect(md).to eq(want)
       expect(stub).to have_been_requested
     end
@@ -104,11 +114,12 @@ shared_examples "apply/apply! are OK" do
 
       md = { foo: "bar" }
       @id_client.apply! md
-      want = { :foo => "bar", auth_key => "Bearer #{token}" }
+      want = expected_headers.call(@id_client, token)
       expect(md).to eq(want)
       expect(stub).to have_been_requested
     end
   end
+
 
   describe "updater_proc" do
     it "should provide a proc that updates a hash with the access token" do
@@ -117,11 +128,12 @@ shared_examples "apply/apply! are OK" do
       md = { foo: "bar" }
       the_proc = @client.updater_proc
       got = the_proc.call md
-      want = { :foo => "bar", auth_key => "Bearer #{token}" }
+      want = expected_headers.call(@client, token)
       expect(got).to eq(want)
       expect(stub).to have_been_requested
     end
   end
+
 
   describe "#apply" do
     it "should not update the original hash with the access token" do
@@ -141,7 +153,7 @@ shared_examples "apply/apply! are OK" do
 
       md = { foo: "bar" }
       got = @client.apply md
-      want = { :foo => "bar", auth_key => "Bearer #{token}" }
+      want = expected_headers.call(@client, token)
       expect(got).to eq(want)
       expect(stub).to have_been_requested
     end
@@ -154,7 +166,7 @@ shared_examples "apply/apply! are OK" do
       n.times do |_t|
         md = { foo: "bar" }
         got = @client.apply md
-        want = { :foo => "bar", auth_key => "Bearer #{token}" }
+        want = expected_headers.call(@client, token)
         expect(got).to eq(want)
       end
       expect(stub).to have_been_requested
@@ -168,7 +180,7 @@ shared_examples "apply/apply! are OK" do
         make_auth_stubs access_token: t
         md = { foo: "bar" }
         got = @client.apply md
-        want = { :foo => "bar", auth_key => "Bearer #{t}" }
+        want = expected_headers.call(@client, t)
         expect(got).to eq(want)
         @client.expires_at -= 3601 # default is to expire in 1hr
         ::Google::Cloud.env.compute_metadata.cache.expire_all!

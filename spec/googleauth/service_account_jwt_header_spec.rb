@@ -217,4 +217,28 @@ describe Google::Auth::ServiceAccountJwtHeaderCredentials do
       expect(@creds.duplicate(logger: :foo).logger).to eq :foo
     end
   end
+
+  describe "#apply! with quota_project_id" do
+    it "sets the x-goog-user-project header" do
+      cred_json_with_quota = cred_json.merge(quota_project_id: "quota-project-123")
+      client = clz.make_creds(
+        json_key_io: StringIO.new(JSON.generate(cred_json_with_quota))
+      )
+      
+      hash = { :jwt_aud_uri => "https://pubsub.googleapis.com/" }
+      client.apply! hash
+      expect(hash[:"x-goog-user-project"]).to eq("quota-project-123")
+    end
+    
+    it "does not set the x-goog-user-project header when quota_project_id is not present" do
+      client = clz.make_creds(
+        json_key_io: StringIO.new(cred_json_text)
+      )
+      
+      hash = { :jwt_aud_uri => "https://pubsub.googleapis.com/" }
+      client.apply! hash
+      expect(hash).not_to include(:"x-goog-user-project")
+    end
+  end
 end
+

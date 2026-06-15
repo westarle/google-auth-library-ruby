@@ -111,12 +111,16 @@ module Google
         return a_hash if jwt_aud_uri.nil? && @scope.nil?
         jwt_token = new_jwt_token jwt_aud_uri, opts
         a_hash[AUTH_METADATA_KEY] = "Bearer #{jwt_token}"
+        if respond_to?(:quota_project_id) && quota_project_id
+          a_hash[:"x-goog-user-project"] = quota_project_id
+        end
         logger&.debug do
           hash = Digest::SHA256.hexdigest jwt_token
           Google::Logging::Message.from message: "Sending JWT auth token. (sha256:#{hash})"
         end
         a_hash
       end
+
 
       # Returns a clone of a_hash updated with the authorization header
       def apply a_hash, opts = {}

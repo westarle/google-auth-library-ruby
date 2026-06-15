@@ -420,4 +420,32 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
+
+  describe "#apply! with quota_project_id" do
+    it "sets the x-goog-user-project header" do
+      @client = ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(cred_json_text),
+        scope:       "https://www.googleapis.com/auth/userinfo.profile"
+      )
+      make_auth_stubs access_token: "token"
+      
+      hash = {}
+      @client.apply! hash
+      expect(hash[:"x-goog-user-project"]).to eq("b_project_id")
+    end
+    
+    it "does not set the x-goog-user-project header when quota_project_id is not present" do
+      cred_json_no_quota = cred_json.reject { |k| k == :quota_project_id }
+      client_no_quota = ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(JSON.generate(cred_json_no_quota)),
+        scope:       "https://www.googleapis.com/auth/userinfo.profile"
+      )
+      make_auth_stubs access_token: "token"
+      
+      hash = {}
+      client_no_quota.apply! hash
+      expect(hash).not_to include(:"x-goog-user-project")
+    end
+  end
 end
+
