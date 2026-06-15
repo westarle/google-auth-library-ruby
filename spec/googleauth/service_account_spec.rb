@@ -119,6 +119,15 @@ describe Google::Auth::ServiceAccountCredentials do
     )
   end
 
+  it "raises an error if the private key is malformed" do
+    cred_json[:private_key] = "invalid_key"
+    expect do
+      ServiceAccountCredentials.make_creds(
+        json_key_io: StringIO.new(JSON.generate(cred_json))
+      )
+    end.to raise_error(OpenSSL::PKey::RSAError)
+  end
+
   it "succeeds if the credential type is missing (uses default)" do
     key_without_type = cred_json.reject { |k, _| k == :type }
     expect do
@@ -420,4 +429,5 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
-end
+
+  end
