@@ -291,6 +291,7 @@ describe Google::Auth::Credentials, :private do
       allow(::ENV).to receive(:[]).with("APPDATA") { nil }
       allow(::ENV).to receive(:[]).with("ProgramData") { nil }
       allow(::ENV).to receive(:[]).with("GOOGLE_SDK_RUBY_LOGGING_GEMS") { nil }
+      allow(::ENV).to receive(:[]).with("GOOGLE_CLOUD_QUOTA_PROJECT") { nil }
       allow(::File).to receive(:file?).with(FAKE_DEFAULT_PATH) { false }
 
       # stub_token_request
@@ -742,6 +743,27 @@ describe Google::Auth::Credentials, :private do
       creds = Google::Auth::Credentials.new mock_client_full, quota_project_id: options_quota_project_id
       expect(creds.quota_project_id).to eq(options_quota_project_id)
     end
+
+    it "prefers GOOGLE_CLOUD_QUOTA_PROJECT environment variable over hash value" do
+      ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] = "env_quota_project_id"
+      begin
+        creds = Google::Auth::Credentials.new default_keyfile_hash
+        expect(creds.quota_project_id).to eq("env_quota_project_id")
+      ensure
+        ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] = nil
+      end
+    end
+
+    it "prefers quota_project_id from options over GOOGLE_CLOUD_QUOTA_PROJECT environment variable" do
+      ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] = "env_quota_project_id"
+      begin
+        creds = Google::Auth::Credentials.new default_keyfile_hash, quota_project_id: options_quota_project_id
+        expect(creds.quota_project_id).to eq(options_quota_project_id)
+      ensure
+        ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] = nil
+      end
+    end
+
 
     context "logger handling" do
       # Same as the Signet test in the logger section

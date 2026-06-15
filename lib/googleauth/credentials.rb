@@ -405,7 +405,7 @@ module Google
 
         options = symbolize_hash_keys options
         @project_id = options[:project_id] || options[:project]
-        @quota_project_id = options[:quota_project_id]
+        @quota_project_id = options[:quota_project_id] || ENV["GOOGLE_CLOUD_QUOTA_PROJECT"]
         case source_creds
         when String, Pathname
           update_from_filepath source_creds, options

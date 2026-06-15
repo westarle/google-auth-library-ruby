@@ -332,6 +332,43 @@ describe Google::Auth::ServiceAccountCredentials do
       end
     end
 
+    it "prefers GOOGLE_CLOUD_QUOTA_PROJECT environment variable over file value" do
+      ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] = "env_quota_project_id"
+      begin
+        Dir.mktmpdir do |dir|
+          key_path = File.join dir, ".config", @known_path
+          key_path = File.join dir, WELL_KNOWN_PATH if OS.windows?
+          FileUtils.mkdir_p File.dirname(key_path)
+          File.write key_path, cred_json_text
+          ENV["HOME"] = dir
+          ENV["APPDATA"] = dir
+          credentials = @clz.from_well_known_path @scope
+          expect(credentials.quota_project_id).to eq("env_quota_project_id")
+        end
+      ensure
+        ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] = nil
+      end
+    end
+
+    it "prefers quota_project_id from options over GOOGLE_CLOUD_QUOTA_PROJECT environment variable" do
+      ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] = "env_quota_project_id"
+      begin
+        Dir.mktmpdir do |dir|
+          key_path = File.join dir, ".config", @known_path
+          key_path = File.join dir, WELL_KNOWN_PATH if OS.windows?
+          FileUtils.mkdir_p File.dirname(key_path)
+          File.write key_path, cred_json_text
+          ENV["HOME"] = dir
+          ENV["APPDATA"] = dir
+          credentials = @clz.from_well_known_path @scope, quota_project_id: "explicit_quota_project_id"
+          expect(credentials.quota_project_id).to eq("explicit_quota_project_id")
+        end
+      ensure
+        ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] = nil
+      end
+    end
+
+
     it "propagates default_connection option" do
       Dir.mktmpdir do |dir|
         key_path = File.join dir, ".config", @known_path

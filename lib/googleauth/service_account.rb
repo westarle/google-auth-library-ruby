@@ -88,7 +88,7 @@ module Google
             issuer:                 client_email,
             signing_key:            OpenSSL::PKey::RSA.new(private_key),
             project_id:             project_id,
-            quota_project_id:       quota_project_id,
+            quota_project_id:       options[:quota_project_id] || ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] || quota_project_id,
             universe_domain:        universe_domain || "googleapis.com")
           .configure_connection(options)
       end

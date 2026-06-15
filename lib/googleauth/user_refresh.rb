@@ -74,7 +74,7 @@ module Google
             client_secret:        user_creds["client_secret"],
             refresh_token:        user_creds["refresh_token"],
             project_id:           user_creds["project_id"],
-            quota_project_id:     user_creds["quota_project_id"],
+            quota_project_id:     options[:quota_project_id] || ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] || user_creds["quota_project_id"],
             scope:                scope,
             universe_domain:      user_creds["universe_domain"] || "googleapis.com")
           .configure_connection(options)

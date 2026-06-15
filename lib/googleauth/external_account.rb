@@ -73,6 +73,8 @@ module Google
           CredentialsLoader.load_and_verify_json_key_type json_key_io, CREDENTIAL_TYPE_NAME
           user_creds = read_json_key json_key_io
 
+          user_creds[:quota_project_id] = options[:quota_project_id] || ENV["GOOGLE_CLOUD_QUOTA_PROJECT"] || user_creds[:quota_project_id]
+
           # AWS credentials is determined by aws subject token type
           return make_aws_credentials user_creds, scope if user_creds[:subject_token_type] == AWS_SUBJECT_TOKEN_TYPE
 
@@ -113,7 +115,8 @@ module Google
               token_url: user_creds[:token_url],
               credential_source: user_creds[:credential_source],
               service_account_impersonation_url: user_creds[:service_account_impersonation_url],
-              universe_domain: user_creds[:universe_domain]
+              universe_domain: user_creds[:universe_domain],
+              quota_project_id: user_creds[:quota_project_id]
             )
           end
 
