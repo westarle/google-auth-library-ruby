@@ -420,4 +420,33 @@ describe Google::Auth::ServiceAccountCredentials do
       expect(@creds.duplicate(enable_self_signed_jwt: true).enable_self_signed_jwt?).to eq true
     end
   end
+
+  describe "Key format handling" do
+    it "handles PKCS#1 format" do
+      pkcs1_key = @key.export
+      cred = cred_json.dup
+      cred[:private_key] = pkcs1_key
+      expect {
+        ServiceAccountCredentials.make_creds(json_key_io: StringIO.new(JSON.generate(cred)))
+      }.not_to raise_error
+    end
+
+    it "handles PKCS#8 format" do
+      # to_pem on PKey::RSA might return PKCS#1 or PKCS#8, but OpenSSL::PKey.read handles PKCS#8.
+      pkcs8_key = @key.to_pem
+      cred = cred_json.dup
+      cred[:private_key] = pkcs8_key
+      expect {
+        ServiceAccountCredentials.make_creds(json_key_io: StringIO.new(JSON.generate(cred)))
+      }.not_to raise_error
+    end
+
+    it "raises an error for invalid key format" do
+      cred = cred_json.dup
+      cred[:private_key] = "invalid key data"
+      expect {
+        ServiceAccountCredentials.make_creds(json_key_io: StringIO.new(JSON.generate(cred)))
+      }.to raise_error(OpenSSL::PKey::RSAError)
+    end
+  end
 end

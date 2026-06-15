@@ -298,7 +298,7 @@ module Google
       # @return [Hash] The authorization header with the source credentials' token
       def prepare_auth_header
         auth_header = {}
-        @source_credentials.updater_proc.call auth_header
+        auth_header = @source_credentials.updater_proc.call auth_header
         auth_header
       end
 
